@@ -488,6 +488,10 @@ const NFTItem = () => {
           data.image = getRandomIPFS(data.image);
         }
 
+        if (data.animation_url != undefined) {
+          contentType.current = 'embed';
+        }
+
         setInfo(data);
       } catch {
         history.replace('/404');
@@ -2395,7 +2399,16 @@ const NFTItem = () => {
         />
       );
     } else if (contentType === 'embed') {
-      return <iframe className={styles.content} src={image} />;
+      return (
+        <iframe
+          className={styles.content}
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen=""
+          frameBorder="0"
+          sandbox="allow-scripts"
+          src={image}
+        />
+      );
     } else if (contentType === 'image' || contentType === 'gif') {
       return (
         <Suspense
@@ -2984,7 +2997,12 @@ const NFTItem = () => {
                       bundleItems.current[previewIndex].contentType
                     )
                   ) : (
-                    renderMedia(info?.image, contentType.current)
+                    renderMedia(
+                      info?.animation_url != undefined
+                        ? getRandomIPFS(info?.animation_url)
+                        : info?.image,
+                      contentType.current
+                    )
                   )
                 ) : null}
               </div>
